@@ -1,17 +1,19 @@
 package com.ryc.user.model;
 
+import com.ryc.user.validation.EnumeratorValidator;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 
 @Data
 public class UserModel {
 
-	@NotEmpty
+	@NotBlank
 	private String email;
-	@NotEmpty
+	@NotBlank
 	private String name;
-	@NotEmpty
-	private String role;
+	@EnumeratorValidator(enumClass = UserRole.class)
+	private UserRole role;
 }
