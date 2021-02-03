@@ -16,8 +16,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -47,6 +50,37 @@ public class UserServiceTest {
 	}
 
 	@Test
+	public void testFindAllUsers(){
+		List<UserEntity> userEntities = List.of(userEntity);
+		when(userRepository.findAll()).thenReturn(userEntities);
+		when(userMapper.entityToModel(Mockito.any(UserEntity.class))).thenReturn(userModel);
+
+		List<UserModel> userModels = userService.findAllUsers();
+
+		assertEquals(1, userModels.size());
+		assertEquals(userModel, userModels.get(0));
+	}
+
+	@Test
+	public void testFindUserOK(){
+		when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(userEntity);
+		when(userMapper.entityToModel(Mockito.any(UserEntity.class))).thenReturn(userModel);
+
+		UserModel userModelFound = userService.findUser("test@test.com");
+
+		assertEquals(userModel, userModelFound);
+	}
+
+	@Test
+	public void testFindUserNotExisting(){
+		when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(null);
+
+		BusinessServiceException exception = assertThrows(BusinessServiceException.class, () -> userService.findUser("test@test.com"));
+
+		assertEquals(exception.getMessage(), "This user does not exist");
+	}
+
+	@Test
 	public void testCreateUserOK(){
 		when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(null);
 		when(userMapper.modelToEntity(Mockito.any(UserModel.class))).thenReturn(userEntity);
@@ -65,5 +99,43 @@ public class UserServiceTest {
 		BusinessServiceException exception = assertThrows(BusinessServiceException.class, () -> userService.createUser(userModel));
 
 		assertEquals(exception.getMessage(), "The user already exists");
+	}
+
+	@Test
+	public void testUpdateUserOK(){
+		when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(userEntity);
+		when(userMapper.modelToEntity(Mockito.any(UserModel.class))).thenReturn(userEntity);
+		when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(userEntity);
+		when(userMapper.entityToModel(Mockito.any(UserEntity.class))).thenReturn(userModel);
+
+		UserModel userUpdated = userService.updateUser("test@test.com", userModel);
+
+		assertEquals(userModel, userUpdated);
+	}
+
+	@Test
+	public void testUpdateUserNotExisting(){
+		when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(null);
+
+		BusinessServiceException exception = assertThrows(BusinessServiceException.class, () -> userService.updateUser("test@test.com", userModel));
+
+		assertEquals(exception.getMessage(), "This user does not exist");
+	}
+
+	@Test
+	public void testDeleteUserOK(){
+		when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(new UserEntity());
+		doNothing().when(userRepository).delete(Mockito.any(UserEntity.class));
+
+		assertDoesNotThrow(() -> userService.deleteUser("test@test.com"));
+	}
+
+	@Test
+	public void testDeleteUserNotExisting(){
+		when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(null);
+
+		BusinessServiceException exception = assertThrows(BusinessServiceException.class, () -> userService.deleteUser("test@test.com"));
+
+		assertEquals(exception.getMessage(), "This user does not exist");
 	}
 }
