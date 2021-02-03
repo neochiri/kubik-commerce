@@ -107,5 +107,6 @@
 
 	<modules>
 		<module>user</module>
+		<module>store</module>
 	</modules>
 </project>
