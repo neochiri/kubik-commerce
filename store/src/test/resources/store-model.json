@@ -1,0 +1,10 @@
+{
+   "name" : "Game",
+   "category" : "Gaming",
+   "address" : {
+     "street": "Fake St.",
+     "city" : "Ohio",
+     "coordinateX" : 20.01,
+     "coordinateY" : 12.20
+   }
+}

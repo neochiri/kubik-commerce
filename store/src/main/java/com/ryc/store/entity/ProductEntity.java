@@ -16,4 +16,7 @@ public class ProductEntity {
 	private String name;
 	private BigDecimal price;
 	private Integer availability;
+	@ManyToOne
+	@JoinColumn(name = "store_id", referencedColumnName = "id", nullable = false)
+	private StoreEntity store;
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public interface ProductService {
 
 	List<ProductModel> findAllProductsByStore(String storeName);
-	ProductModel findProductByStore(String storeName);
+	ProductModel findProductByStore(String storeName, String productName);
 	ProductModel createProduct(String storeName, ProductModel productModelToCreate);
 	ProductModel updateProduct(String storeName, ProductModel productModelToUpdate);
 	void deleteProduct(String storeName, String productName);

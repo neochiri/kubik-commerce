@@ -3,6 +3,7 @@ package com.ryc.store.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "store")
 @Data
@@ -18,4 +19,6 @@ public class StoreEntity {
 	private double coordinateX;
 	private double coordinateY;
 	private String category;
+	@OneToMany(mappedBy = "store")
+	private List<ProductEntity> products;
 }
