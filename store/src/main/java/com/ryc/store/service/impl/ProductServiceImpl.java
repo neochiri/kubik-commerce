@@ -6,6 +6,7 @@ import com.ryc.store.exception.BusinessServiceException;
 import com.ryc.store.exception.ErrorType;
 import com.ryc.store.mapper.ProductMapper;
 import com.ryc.store.model.ProductModel;
+import com.ryc.store.notification.EmailHandler;
 import com.ryc.store.repository.ProductRepository;
 import com.ryc.store.repository.StoreRepository;
 import com.ryc.store.service.iface.ProductService;
@@ -21,11 +22,13 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductRepository productRepository;
 	private final StoreRepository storeRepository;
 	private final ProductMapper productMapper;
+	private final EmailHandler emailHandler;
 
-	public ProductServiceImpl(ProductRepository productRepository, StoreRepository storeRepository, ProductMapper productMapper) {
+	public ProductServiceImpl(ProductRepository productRepository, StoreRepository storeRepository, ProductMapper productMapper, EmailHandler emailHandler) {
 		this.productRepository = productRepository;
 		this.storeRepository = storeRepository;
 		this.productMapper = productMapper;
+		this.emailHandler = emailHandler;
 	}
 
 	@Override
@@ -87,6 +90,10 @@ public class ProductServiceImpl implements ProductService {
 		if(Objects.isNull(productEntityFound)) throw new BusinessServiceException("This product does not exist", ErrorType.BUSINESS_ERROR);
 
 		productRepository.delete(productEntityFound);
+
+		StoreEntity storeEntityFound = findStoreByName(storeName);
+
+		emailHandler.sendEmailProductRemoved(storeEntityFound.getOwner(), storeEntityFound.getProducts());
 	}
 
 	private StoreEntity findStoreByName(String storeName){
@@ -96,4 +103,6 @@ public class ProductServiceImpl implements ProductService {
 	private ProductEntity findProductByName(String productName){
 		return productRepository.findProductByName(productName);
 	}
+
+
 }

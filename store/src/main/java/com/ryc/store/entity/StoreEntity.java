@@ -19,6 +19,7 @@ public class StoreEntity {
 	private double coordinateX;
 	private double coordinateY;
 	private String category;
+	private String owner;
 	@OneToMany(mappedBy = "store")
 	private List<ProductEntity> products;
 }
