@@ -9,6 +9,6 @@ public interface StoreService {
 	List<StoreModel> findAllStores();
 	StoreModel findStoreByName(String storeName);
 	StoreModel createStore(StoreModel storeModelToCreate);
-	StoreModel updateStore(StoreModel storeModelToUpdate);
+	StoreModel updateStore(String storeName, StoreModel storeModelToUpdate);
 	void deleteStore(String storeName);
 }
