@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface StoreService {
 
-	List<StoreModel> findAllStores();
+	List<StoreModel> findAllStores(String street, String city, double coordinateX, double coordinateY, String category, String owner);
 	StoreModel findStoreByName(String storeName);
 	StoreModel createStore(StoreModel storeModelToCreate);
 	StoreModel updateStore(String storeName, StoreModel storeModelToUpdate);

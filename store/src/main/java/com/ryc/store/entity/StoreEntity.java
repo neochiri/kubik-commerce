@@ -16,8 +16,8 @@ public class StoreEntity {
 	private String name;
 	private String street;
 	private String city;
-	private double coordinateX;
-	private double coordinateY;
+	private Double coordinateX;
+	private Double coordinateY;
 	private String category;
 	private String owner;
 	@OneToMany(mappedBy = "store")

@@ -1,16 +1,20 @@
 package com.ryc.store.controller;
 
+import com.ryc.store.entity.StoreEntity;
 import com.ryc.store.model.ProductModel;
 import com.ryc.store.model.StoreModel;
 import com.ryc.store.service.iface.ProductService;
 import com.ryc.store.service.iface.StoreService;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/store")
@@ -25,8 +29,12 @@ public class StoreController {
 	}
 
 	@GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<StoreModel>> getAllStores(){
-		List<StoreModel> storesFound = storeService.findAllStores();
+	public ResponseEntity<List<StoreModel>> getAllStores(@RequestParam(value = "street", required = false) String street, @RequestParam(value = "city", required = false) String city,
+														 @RequestParam(value = "coordinateX", required = false) Double coordinateX, @RequestParam(value = "coordinateY", required = false) Double coordinateY,
+														 @RequestParam(value = "category", required = false) String category, @RequestParam(value = "owner", required = false) String owner){
+		if(Objects.isNull(coordinateX)) coordinateX = 0.0;
+		if(Objects.isNull(coordinateY)) coordinateY = 0.0;
+		List<StoreModel> storesFound = storeService.findAllStores(street, city, coordinateX, coordinateY, category, owner);
 		return new ResponseEntity<>(storesFound, new HttpHeaders(), HttpStatus.OK);
 	}
 

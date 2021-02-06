@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @ControllerAdvice(annotations = RestController.class)
@@ -70,7 +71,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		errorApi.setMessage("Internal error");
 		errorApi.setCodeError(ErrorType.SERVER_ERROR.getCodeError());
 		errorApi.setDetails(new ArrayList<>());
-		errorApi.getDetails().add(exception.getCause().toString());
+		errorApi.getDetails().add(Objects.nonNull(exception.getCause()) ? exception.getCause().toString() : "");
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
