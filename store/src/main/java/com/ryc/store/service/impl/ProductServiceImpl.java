@@ -51,9 +51,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public ProductModel createProduct(String storeName, ProductModel productModelToCreate) {
-		if(Objects.isNull(findStoreByName(storeName))) throw new BusinessServiceException("This store does not exist", ErrorType.BUSINESS_ERROR);
+		StoreEntity storeEntityFound = findStoreByName(storeName);
+		if(Objects.isNull(storeEntityFound)) throw new BusinessServiceException("This store does not exist", ErrorType.BUSINESS_ERROR);
 		if(Objects.nonNull(findProductByName(productModelToCreate.getName()))) throw new BusinessServiceException("This product already exist", ErrorType.BUSINESS_ERROR);
 		ProductEntity productEntityToCreate = productMapper.convertModelToEntity(productModelToCreate);
+		productEntityToCreate.setStore(storeEntityFound);
 		ProductEntity productEntityCreated = productRepository.save(productEntityToCreate);
 		ProductModel productModelCreated = productMapper.convertEntityToModel(productEntityCreated);
 		return productModelCreated;
